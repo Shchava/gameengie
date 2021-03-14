@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_gameengtest2" default="compile.module.gameengtest2">
+  <dirname property="module.gameengtest2.basedir" file="${ant.file.module_gameengtest2}"/>
+  
+  <property name="module.jdk.home.gameengtest2" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.gameengtest2" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.gameengtest2" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.gameengtest2" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="gameengtest2.output.dir" value="${module.gameengtest2.basedir}/out/production/gameEngTest2"/>
+  <property name="gameengtest2.testoutput.dir" value="${module.gameengtest2.basedir}/out/test/gameEngTest2"/>
+  
+  <path id="gameengtest2.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="gameengtest2.module.production.classpath">
+    <path refid="${module.jdk.classpath.gameengtest2}"/>
+    <path refid="library.lib.classpath"/>
+  </path>
+  
+  <path id="gameengtest2.runtime.production.module.classpath">
+    <pathelement location="${gameengtest2.output.dir}"/>
+    <path refid="library.lib.classpath"/>
+  </path>
+  
+  <path id="gameengtest2.module.classpath">
+    <path refid="${module.jdk.classpath.gameengtest2}"/>
+    <pathelement location="${gameengtest2.output.dir}"/>
+    <path refid="library.lib.classpath"/>
+  </path>
+  
+  <path id="gameengtest2.runtime.module.classpath">
+    <pathelement location="${gameengtest2.testoutput.dir}"/>
+    <pathelement location="${gameengtest2.output.dir}"/>
+    <path refid="library.lib.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.gameengtest2">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.gameengtest2">
+    <patternset refid="excluded.from.module.gameengtest2"/>
+  </patternset>
+  
+  <path id="gameengtest2.module.sourcepath">
+    <dirset dir="${module.gameengtest2.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.gameengtest2" depends="compile.module.gameengtest2.production,compile.module.gameengtest2.tests" description="Compile module gameEngTest2"/>
+  
+  <target name="compile.module.gameengtest2.production" depends="register.custom.compilers" description="Compile module gameEngTest2; production classes">
+    <mkdir dir="${gameengtest2.output.dir}"/>
+    <javac2 destdir="${gameengtest2.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.gameengtest2}/javac">
+      <compilerarg line="${compiler.args.gameengtest2}"/>
+      <bootclasspath refid="gameengtest2.module.bootclasspath"/>
+      <classpath refid="gameengtest2.module.production.classpath"/>
+      <src refid="gameengtest2.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.gameengtest2"/>
+    </javac2>
+    
+    <copy todir="${gameengtest2.output.dir}">
+      <fileset dir="${module.gameengtest2.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.gameengtest2.tests" depends="register.custom.compilers,compile.module.gameengtest2.production" description="compile module gameEngTest2; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.gameengtest2" description="cleanup module">
+    <delete dir="${gameengtest2.output.dir}"/>
+    <delete dir="${gameengtest2.testoutput.dir}"/>
+  </target>
+</project>
