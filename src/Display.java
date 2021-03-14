@@ -15,8 +15,10 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class Display extends Application {
-    static int ResolutionX = 1800;
-    static int ResolutionY = 900;
+    static int ResolutionX = 700;
+    static int ResolutionY = 500;
+//    static int ResolutionX = 1800;
+//    static int ResolutionY = 900;
     static int pixelWidth = 2;
     static int DepthOfView = 100;
     static double speed = 0.1;
@@ -149,12 +151,12 @@ public class Display extends Application {
                 }
             }
 
-            Platform.runLater(() ->
-                    {
+//            Platform.runLater(() -> {
                         viewOut.setImage(output);
-                    }
-            );
+//                    });
+
         }
+        GameLoop.PROCESS.unlock();
     }
 
     ;
@@ -172,17 +174,16 @@ public class Display extends Application {
             int pix = pixel;
 			/*Platform.runLater(() -> 
 			Display.gc.clearRect(pix, 0, pixelWidth, ResolutionY));*/
-            Platform.runLater(() ->
-                    {
+//            Platform.runLater(() -> {
                         gc.setFill(Color.WHITE);
                         Display.gc.fillRect(pix, 0, pixelWidth, ResolutionY);
 //
                         gc.setFill(Color.BLACK);
                         Display.gc.fillRect(pix, VerticalCorrect, pixelWidth, hegightOfPixel);
-                    }
-            );
-            Thread.yield();
+//                    });
         }
+
+        GameLoop.PROCESS.unlock();
     }
 
     public static void drawTexturedFrame() {
