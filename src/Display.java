@@ -15,10 +15,10 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class Display extends Application {
-    static int ResolutionX = 700;
-    static int ResolutionY = 500;
-//    static int ResolutionX = 1800;
-//    static int ResolutionY = 900;
+//    static int ResolutionX = 700;
+//    static int ResolutionY = 500;
+    static int ResolutionX = 1800;
+    static int ResolutionY = 900;
     static int pixelWidth = 2;
     static int DepthOfView = 100;
     static double speed = 0.1;
@@ -28,6 +28,8 @@ public class Display extends Application {
     static double x = 0.5;
     static double y = 0.5;
     static double Direction = Math.PI / 2 - FOV / 2;
+
+    static final int HALF_OF_SCREEN_HEIGHT = ResolutionY/2;
 
     Thread loop;
 
@@ -152,7 +154,7 @@ public class Display extends Application {
             }
 
 //            Platform.runLater(() -> {
-                        viewOut.setImage(output);
+            viewOut.setImage(output);
 //                    });
 
         }
@@ -170,17 +172,12 @@ public class Display extends Application {
             double hegightOfPixel = ResolutionY / length / 2;
             double VerticalCorrect = (ResolutionY - hegightOfPixel) / 2;
 
-            ////??????
-            int pix = pixel;
-			/*Platform.runLater(() -> 
-			Display.gc.clearRect(pix, 0, pixelWidth, ResolutionY));*/
-//            Platform.runLater(() -> {
-                        gc.setFill(Color.WHITE);
-                        Display.gc.fillRect(pix, 0, pixelWidth, ResolutionY);
-//
-                        gc.setFill(Color.BLACK);
-                        Display.gc.fillRect(pix, VerticalCorrect, pixelWidth, hegightOfPixel);
-//                    });
+            gc.setFill(Color.WHITE);
+            Display.gc.fillRect(pixel, 0, pixelWidth, ResolutionY);
+
+            gc.setFill(Color.BLACK);
+            Display.gc.fillRect(pixel, VerticalCorrect, pixelWidth, hegightOfPixel);
+
         }
 
         GameLoop.PROCESS.unlock();
@@ -232,6 +229,50 @@ public class Display extends Application {
             }
 
             viewOut.setImage(output);
+        }
+        GameLoop.PROCESS.unlock();
+    }
+
+
+    public static void drawTexturedCanvas() {
+        gc.setFill(Color.WHITE);
+
+        WallEnterance result;
+        double heightOfPixel;
+        double VerticalCorrect;
+        double TexturePixel;
+        double lenght;
+
+
+        Textures texture;
+        PixelReader reader;
+
+        gc.setFill(Color.BLUE);
+        Display.gc.fillRect(0, 0, ResolutionX, HALF_OF_SCREEN_HEIGHT);
+
+        gc.setFill(Color.BLACK);
+        Display.gc.fillRect(0, HALF_OF_SCREEN_HEIGHT, ResolutionX, HALF_OF_SCREEN_HEIGHT);
+
+        for (int pixel = 0; pixel < ResolutionX; pixel++) {
+            result = main.inspectWithTexture(x, y, Direction + FOVofPixel * pixel, DepthOfView);
+            //lenght = main.FishEye(result, FOVofPixel*pixel).length;
+            texture = Textures.getTextureByID(result.texture);
+            reader = texture.reader;
+            lenght = result.length;
+            heightOfPixel = ResolutionY / lenght / 2;
+            VerticalCorrect = (ResolutionY - heightOfPixel) / 2;
+            TexturePixel = texture.img.getHeight() / heightOfPixel;
+
+
+            for (int pixY = 0; pixY < heightOfPixel; pixY++) {
+                if (pixY + VerticalCorrect < 0 || pixY + VerticalCorrect > ResolutionY) {
+                    continue;
+                }
+
+                Color color = reader.getColor((int) (result.correction * texture.img.getWidth()), (int) (TexturePixel * pixY));
+                gc.setFill(color);
+                Display.gc.fillRect(pixel, (int) (pixY + VerticalCorrect), pixelWidth, pixelWidth);
+            }
         }
         GameLoop.PROCESS.unlock();
     }

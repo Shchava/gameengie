@@ -16,8 +16,8 @@ public class GameLoop implements Runnable {
 
                 PROCESS.lock();
                 Platform.runLater(() -> {
-//                    Display.drawTexturedFrame();
-                    Display.drawFrame();
+                    Display.drawTexturedFrame();
+//                    Display.drawTexturedCanvas();
 
                 });
             } catch (Exception ex) {
